@@ -5,14 +5,38 @@ function cadastraProduto($nomeProduto, $descProduto, $imgProduto, $precoProduto)
     $nomeArquivo = "produto.json";
 
     if(file_exists($nomeArquivo)){
-
-
-    }else {
-        $produtos = [];
-        //array_push()
+        //abrindo e pegando informações do arquivo
+        $arquivo = file_get_contents($nomeArquivo);
+        //tranformar o json em array
+        $produtos = json_decode($arquivo, true);
+        //adicionando um novo produto na array que estava dentro do arquivo
         $produtos[] = ["nome"=>$nomeProduto, "preco"=>$precoProduto, "desc"=>$descProduto, "imagem"=>$imgProduto];
 
-        var_dump($produtos);
+        $json = json_encode($produtos);
+
+        //salvando o json dentro de um arquivo
+        $deuCerto = file_put_contents($nomeArquivo, $json);
+
+        if($deuCerto){
+            return "Deu certo brother!";
+        }else {
+            return "Não deu bom!";
+        } 
+
+    }else {
+        $produtos  = [];
+        //array_push()
+        $produtos[] = ["nome"=>$nomeProduto, "preco"=>$precoProduto, "desc"=>$descProduto, "imagem"=>$imgProduto];
+        //transformando array em json
+        $json = json_encode($produtos);
+        //salvando o json dentro de um arquivo
+        $deuCerto = file_put_contents($nomeArquivo, $json);
+
+        if($deuCerto){
+            return "Deu certo brother!";
+        }else {
+            return "Não deu bom!";
+        }
 
     }
 
@@ -21,7 +45,14 @@ function cadastraProduto($nomeProduto, $descProduto, $imgProduto, $precoProduto)
 
 
 if($_POST){
-    cadastraProduto($_POST['nomeProduto'], $_POST['descProduto'], $_POST['imgProduto'], $_POST['precoProduto']);
+    //salvando aquivo
+    $nomeImg = $_FILES['imgProduto']['name'];
+    $localTmp = $_FILES['imgProduto']['tmp_name'];
+    $caminhoSalvo = 'img/'.$nomeImg;
+
+    $deucerto = move_uploaded_file($localTmp, $caminhoSalvo);
+    exit;
+     echo cadastraProduto($_POST['nomeProduto'], $_POST['descProduto'], $_POST['imgProduto'], $_POST['precoProduto']);
 }
 
 ?>
@@ -44,7 +75,7 @@ if($_POST){
                 <h1> Cadastro de Produto </h1>
             </div>
             <div class="col-12">
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <input type="text" class="form-control" name="nomeProduto" placeholder="Nome do Produto "/>
                     </div>
