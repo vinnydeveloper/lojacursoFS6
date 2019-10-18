@@ -1,9 +1,10 @@
 <?php
+session_start();
     $nomeSistema = "Cursos Online";
-    $usuario = ["nome"=>"Nati"];
-
-        $nomeArquivo = "produto.json";
+    $usuario = isset($_SESSION['usuario'])? $_SESSION['usuario']: [];
+        $nomeArquivo = __DIR__."produto.json";
         $produtos = json_decode(file_get_contents($nomeArquivo), true);
+   
     
 
     // $produtos= [
